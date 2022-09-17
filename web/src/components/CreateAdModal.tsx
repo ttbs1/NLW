@@ -3,12 +3,19 @@ import { CaretDown, Check, GameController } from 'phosphor-react'
 import { Input } from './Form/Input'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
+import { styled } from '@stitches/react';
 
 import { Game } from "../App"
 
 type Props = {
     data: Game[]
 }
+
+const StyledTrigger = styled(Select.Trigger, {
+    '&[data-placeholder]': { color: '#71717A' },
+  });
+
+  
 
 export function CreateAdModal({ data }: Props) {
     return (
@@ -22,12 +29,12 @@ export function CreateAdModal({ data }: Props) {
                     <div className="flex flex-col gap-2">
                         <label htmlFor="game" className="font-semibold">Qual o game?</label>
                         <Select.Root>
-                            <Select.Trigger className="w-[100%] h-11 py-3 px-4 bg-zinc-900 rounded text-sm flex justify-between items-center text-zinc-500">
+                            <StyledTrigger className="w-[100%] h-11 py-3 px-4 bg-zinc-900 rounded text-sm flex justify-between items-center text-white">
                                 <Select.Value placeholder="Selecione o game que deseja jogar" />
                                 <Select.Icon>
-                                    <CaretDown className="text-[24px]" />
+                                    <CaretDown className="text-[24px] text-zinc-500" />
                                 </Select.Icon>
-                            </Select.Trigger>
+                            </StyledTrigger>
 
                             <Select.Portal>
                                 <Select.Content className="w-[100%] py-3 px-4 bg-zinc-700 rounded text-sm">
