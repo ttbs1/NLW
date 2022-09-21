@@ -1,5 +1,7 @@
 # NLW
-This is a repository for the event "Next Level Week" powered by RocketSeat. I'll be participating in the Ignite lane and here will be the server, web and mobile deploys for it's application named "find your duo!".
+This is a repository for the event "Next Level Week" powered by RocketSeat. I'll be participating in the Ignite lane and here will be the server, web and mobile deploys for it's application named "find your duo!"
+
+After the classes period, I decided to work on new funcionalites to this project, so they will be implemented according to my free time, for studying purposes, and will be shared here
 
 ### TODO LIST BY ROCKETSEAT TEAM - Suggested follow ups
 
