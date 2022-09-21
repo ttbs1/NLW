@@ -14,6 +14,7 @@ This is a repository for the event "Next Level Week" powered by RocketSeat. I'll
 
 ❌ XX/XX | Implement push notifications <br>
 ✔️ 09/11 | Upload to git <br>
+❌ XX/XX | Fields validation <br>
 
 ### TODO LIST BY ME
 
