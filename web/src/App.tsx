@@ -5,10 +5,11 @@ import { GameBanner } from './components/GameBanner'
 import { CreateAdBanner } from './components/CreateAdBanner'
 import { useEffect, useState } from 'react'
 import { CreateAdModal } from './components/CreateAdModal'
-import axios from 'axios'
 import { useKeenSlider } from 'keen-slider/react'
-//import './styles/keen-slider.css'
 import 'keen-slider/keen-slider.min.css'
+import { getGames } from './api'
+import { Spinner } from "react-activity"
+import "react-activity/dist/library.css"
 
 export type Game = {
     id: string;
@@ -31,33 +32,12 @@ function App() {
                 perView: 'auto',
                 spacing: 30
             },
-        },
-        [
-
-        ]
-    )
+        }, [])
 
     useEffect(() => {
-        axios('http://localhost:3333/games')
-            .then(response => setGames(response.data))
-
-
-        //GAMBIARRA, CORRIGIR DEPOIS, TROCAR 0.1s POR DEPOIS QUE O REACT TERMINAR DE ATUALIZAR O CONTEÚDO NO DOM
-        let delayInMilliseconds = 100; //0.1 second
-
         setTimeout(function () {
-            //your code to be executed after 0.1 second
-            instanceRef.current?.update({
-                loop: true,
-                mode: "free-snap",
-                slides: {
-                    origin: 'center',
-                    perView: 'auto',
-                    spacing: 30
-                }
-            })
-        }, delayInMilliseconds);
-
+            getGames().then(data => setGames(data));
+        }, 0) //CHANGE THE NUMBER 0 BY THE MILISECONDS YOU WANT TO DELAY API RESPONSE TO PREVIEW THE LOADING COMPONENT
     }, [])
 
 
@@ -68,17 +48,22 @@ function App() {
             <h1 className='text-6xl text-white font-black mt-20'>
                 Seu <span className='bg-nlw-gradient text-transparent bg-clip-text'>duo</span> está aqui.
             </h1>
-            
-            <div ref={sliderRef} className='keen-slider mt-16 self-stretch'>
-                {games.map((game) => {
-                    return <GameBanner
-                        key={game.id}
-                        bannerUrl={game.bannerUrl}
-                        title={game.title}
-                        adsCount={game._count.ads} />
-                })}
-            </div>
-            
+
+            {games.length == 0 ? 
+                <div className='mt-16 flex items-center align-middle h-[266.66px]'>
+                    <Spinner size={25} color={"white"} />
+                </div>
+            :
+                <div ref={sliderRef} className='keen-slider mt-16 self-stretch'>
+                    {games.map((game) => {
+                        return <GameBanner
+                            key={game.id}
+                            bannerUrl={game.bannerUrl}
+                            title={game.title}
+                            adsCount={game._count.ads} />
+                    })}
+                </div>
+            }
             <Dialog.Root>
                 <CreateAdBanner />
                 <CreateAdModal data={games} />
