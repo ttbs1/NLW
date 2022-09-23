@@ -6,7 +6,7 @@ import * as Select from '@radix-ui/react-select'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 import { styled } from '@stitches/react';
 
-import { Game } from "../App"
+import { Game } from "../screens/Games"
 import { useState, FormEvent } from "react"
 import axios from "axios"
 

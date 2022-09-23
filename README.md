@@ -22,8 +22,8 @@ After the classes period, I decided to work on new funcionalites to this project
 
 #### WEB:
 
-❌ XX/XX | Navigate to ads screen when select a game <br>
-✔️ 09/22 | Render an activity indicator while fetching data <br>
+✔️ 09/23 | Navigate to ads screen when select a game <br>
+✔️ 09/22 | Render an activity indicator while fetching data (react-activity) <br>
 
 #### MOBILE:
 
