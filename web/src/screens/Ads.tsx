@@ -47,19 +47,25 @@ function Ads() {
 
     return (
         <div className='max-w-[88%] mx-auto flex flex-col items-center m-20'>
-            <img src={banner as string} />
+            <img src={banner as string} className="h-64 2xl:h-auto" />
+
+            <h1 className='text-5xl text-white font-semibold mt-10 text-center'>
+                <span>{title}</span>
+                <p className='text-lg'>Conecte-se e comece a jogar!</p>
+            </h1>
+
             {ads.length == 0 ? ( 
                 !fetchFlag ?
-                <div className='mt-16 flex items-center align-middle h-[276.66px]'>
+                <div className='mt-14 flex items-center align-middle h-[276.66px]'>
                     <Spinner size={25} color={"white"} />
                 </div>
                 :
-                <div className='mt-16 flex items-start align-middle h-[276.66px]'>
+                <div className='mt-14 flex items-start align-middle h-[276.66px]'>
                     <span className='text-white'>Esse jogo ainda não possui nenhum anúncio publicado.</span>
                 </div>
             )
                 :
-                <div ref={sliderRef} className='keen-slider mt-16 self-stretch h-[276.66px]'>
+                <div ref={sliderRef} className='keen-slider mt-14 self-stretch h-[276.66px]'>
                     {ads.map((ad) => {
                         return (
                             <AdCard key={ad.id} data={ad} />
