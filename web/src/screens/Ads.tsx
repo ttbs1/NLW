@@ -22,6 +22,7 @@ function Ads() {
     let title = searchParams.get("game");
     let banner = searchParams.get("banner");
     const [ads, setAds] = useState<Ad[]>([]);
+    const [fetchFlag, setFetchFlag] = useState(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
             loop: false,
@@ -35,24 +36,36 @@ function Ads() {
 
     useEffect(() => {
         setTimeout(function () {
-            getAds(id as string).then(data => setAds(data))
-        }, 1000)
-        document.title = "NLW eSports - "+ title
+            getAds(id as string).then(data => {
+                setAds(data)
+                setFetchFlag(true)
+            })
+        }, 0)
+        document.title = "NLW eSports - " + title
+        
     }, [])
 
     return (
         <div className='max-w-[88%] mx-auto flex flex-col items-center m-20'>
             <img src={banner as string} />
-            {ads.length == 0 ?
-            <div className='mt-16 flex items-center align-middle h-[276.66px]'>
-                <Spinner size={25} color={"white"} />
-            </div>
-            :
-            <div ref={sliderRef} className='keen-slider mt-16 self-stretch h-[276.66px]'>
-                {ads.map((ad) => { return (
-                    <AdCard key={ad.id} data={ad} />
-                )})}
-            </div>}
+            {ads.length == 0 ? ( 
+                !fetchFlag ?
+                <div className='mt-16 flex items-center align-middle h-[276.66px]'>
+                    <Spinner size={25} color={"white"} />
+                </div>
+                :
+                <div className='mt-16 flex items-start align-middle h-[276.66px]'>
+                    <span className='text-white'>Esse jogo ainda não possui nenhum anúncio publicado.</span>
+                </div>
+            )
+                :
+                <div ref={sliderRef} className='keen-slider mt-16 self-stretch h-[276.66px]'>
+                    {ads.map((ad) => {
+                        return (
+                            <AdCard key={ad.id} data={ad} />
+                        )
+                    })}
+                </div>}
         </div>
     );
 }
