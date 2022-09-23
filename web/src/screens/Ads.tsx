@@ -40,7 +40,7 @@ function Ads() {
                 setAds(data)
                 setFetchFlag(true)
             })
-        }, 0)
+        }, 1000)
         document.title = "NLW eSports - " + title
         
     }, [])
