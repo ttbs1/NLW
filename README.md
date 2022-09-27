@@ -24,7 +24,7 @@ After the classes period, I decided to work on new funcionalites to this project
 
 ✔️ 09/23 | Navigate to ads screen when select a game <br>
 ✔️ 09/22 | Render an activity indicator while fetching data (react-activity) <br>
-❌ XX/XX | Fetch user discord by ad when match a duo <br>
+✔️ 09/27 | Fetch user discord by ad when match a duo <br>
 
 #### MOBILE:
 
@@ -34,7 +34,6 @@ After the classes period, I decided to work on new funcionalites to this project
 
 WEB: ❌ XX/XX | MOBILE: ❌ XX/XX | Input to filter games list <br>
 WEB: ❌ XX/XX | MOBILE: ❌ XX/XX | Filter ads by date, time playing, week days and more <br>
-WEB: ❌ XX/XX | MOBILE: ❌ XX/XX | Remember ads user already saw <br>
 
 #### SERVER:
 

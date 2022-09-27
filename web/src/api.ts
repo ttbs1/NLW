@@ -25,3 +25,15 @@ export async function getAds (gameId: string) {
         return null;
     }
 }
+
+export async function getDiscord (adId: string) {
+    try {
+        const response = await axios(`http://localhost:3333/ads/${adId}/discord`);
+        
+
+        return response.status === 200 ? response.data : null;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
