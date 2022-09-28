@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog"
 import { CaretDown, Check, GameController } from 'phosphor-react'
-import { Input } from './Form/Input'
+import Input from './Form/Input'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
@@ -10,6 +10,30 @@ import { Game } from "../screens/Games"
 import { useState, FormEvent } from "react"
 import axios from "axios"
 
+
+//VALIDAÇÃO DE CAMPOS >>>
+import { Resolver, useForm } from "react-hook-form"
+
+type FormValues = {
+    nickname: string;
+    lastName: string;
+};
+
+const resolver: Resolver<FormValues> = async (values) => {
+    return {
+        values: values.nickname ? values : {},
+        errors: !values.nickname
+            ? {
+                nickname: {
+                    type: 'required',
+                    message: 'This is required.',
+                },
+            }
+            : {},
+    };
+};
+//VALIDAÇÃO DE CAMPOS >>>
+
 type Props = {
     data: Game[]
 }
@@ -18,21 +42,22 @@ const StyledTrigger = styled(Select.Trigger, {
     '&[data-placeholder]': { color: '#71717A' },
 });
 
-
-
 export function CreateAdModal({ data }: Props) {
 
     const [weekDays, setWeekDays] = useState<string[]>([])
     const [useVoiceChannel, setUseVoiceChannel] = useState(false)
     const [game, setGame] = useState("")
 
+    const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver });
+    const onSubmit = handleSubmit((data) => console.log(data.nickname));
+
     function handleCreateAd(event: FormEvent) {
         event.preventDefault()
         console.log("submited form")
-    
+
         const formData = new FormData(event.target as HTMLFormElement)
         const data = Object.fromEntries(formData)
-    
+
         try {
             axios.post(`http://localhost:3333/games/${game}/ads`, {
                 name: data.name,
@@ -58,7 +83,7 @@ export function CreateAdModal({ data }: Props) {
                 <Dialog.Title className='text-2xl sm:text-3xl font-black'>Publique um anúncio</Dialog.Title>
 
 
-                <form onSubmit={handleCreateAd} className="mt-8 flex flex-col gap-4">
+                <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <label htmlFor="game" className="text-sm sm:text-base font-semibold">Qual o game?</label>
                         <Select.Root onValueChange={setGame}>
@@ -99,7 +124,8 @@ export function CreateAdModal({ data }: Props) {
 
                     <div className="flex flex-col gap-2 text-sm sm:text-base">
                         <label htmlFor="name">Seu nome (ou nickname)</label>
-                        <Input name="name" id="name" placeholder="Como te chamam dentro do game?" />
+                        <Input {...register("nickname")} placeholder="Como te chamam dentro do game?" />
+                        {errors?.nickname && errors?.nickname.type === "required" && <span>{errors.nickname.message}</span>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 text-sm sm:text-base">
@@ -116,8 +142,8 @@ export function CreateAdModal({ data }: Props) {
                     <div className="flex gap-6 text-sm sm:text-base">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="weekDays">Quando costuma jogar?</label>
-                            <ToggleGroup.Root 
-                                type="multiple" 
+                            <ToggleGroup.Root
+                                type="multiple"
                                 className="grid grid-cols-4 gap-2"
                                 value={weekDays}
                                 onValueChange={setWeekDays}
@@ -184,13 +210,13 @@ export function CreateAdModal({ data }: Props) {
                     </div>
 
                     <label className="mt-2 flex gap-2 text-sm items-center">
-                        <Checkbox.Root 
+                        <Checkbox.Root
                             onCheckedChange={(checked) => {
                                 if (checked == true)
                                     setUseVoiceChannel(true)
                                 else
                                     setUseVoiceChannel(false)
-                            }} 
+                            }}
                             className="w-6 h-6 p-1 rounded bg-zinc-900">
                             <Checkbox.Indicator>
                                 <Check className="w-4 h-4 text-emerald-400" />

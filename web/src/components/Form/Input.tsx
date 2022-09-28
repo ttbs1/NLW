@@ -1,12 +1,19 @@
-import { InputHTMLAttributes } from "react";
+import React from "react";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement>;
+type InputRefs = React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+>;
 
-export function Input(props: InputProps) {
+const Input = React.forwardRef<HTMLInputElement, InputRefs>((props, ref) => {
     return (
+
         <input
             {...props}
+            ref={ref}
             className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
         />
-    );
-}
+    )
+})
+
+export default Input
