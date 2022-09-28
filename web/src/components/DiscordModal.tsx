@@ -27,7 +27,13 @@ function DiscordModal({ adId }: Props) {
     return (
         <Dialog.Portal>
             <Dialog.Overlay className='bg-black/60 inset-0 fixed' />
-            <Dialog.Content className='fixed bg-[#2A2634] py-8 px-10 text-white text-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[85%] sm:w-[480px] shadow-lg shadow-black/25'>
+            <Dialog.Content 
+                className='fixed bg-[#2A2634] py-8 px-10 text-white text-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[85%] sm:w-[480px] shadow-lg shadow-black/25'
+                onCloseAutoFocus={() => {
+                    setCopying(false)
+                    setCopying(false)
+                }} 
+            >
 
                 <div className="text-zinc-500 flex self-stretch justify-end">
                     <Dialog.Close type="button">
