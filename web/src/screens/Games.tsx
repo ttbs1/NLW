@@ -10,6 +10,7 @@ import 'keen-slider/keen-slider.min.css'
 import { getGames } from './../api'
 import { Spinner } from "react-activity"
 import "react-activity/dist/library.css"
+import CustomSelect from '../components/Form/CustomSelect'
 
 export type Game = {
     id: string;
@@ -40,6 +41,9 @@ function Games() {
         }, 1000) //CHANGE THE NUMBER 0 BY THE MILISECONDS YOU WANT TO DELAY API RESPONSE TO PREVIEW THE LOADING COMPONENT
     }, [])
 
+    const modalSelect = (
+        <CustomSelect data={games} />
+    )
 
     return (
         <div className='max-w-[88%] 2xl:max-w-[1344px] mx-auto flex flex-col items-center m-20'>
@@ -67,7 +71,8 @@ function Games() {
             }
             <Dialog.Root>
                 <CreateAdBanner />
-                <CreateAdModal data={games} />
+                <CreateAdModal modalSelect={modalSelect} /> 
+                { /* BOA ALTERNATIVA AO REACT CONTEXT (EVITAR PROP DRILLING) */ } 
             </Dialog.Root>
         </div>
     )

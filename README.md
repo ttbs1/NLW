@@ -10,7 +10,7 @@ After the classes period, I decided to work on new funcionalites to this project
 ✔️ 09/23 | Responsivity <br>
 ✔️ 09/22 | Games carousel (keen-slider) <br>
 ✔️ 09/17 | Radix select to pick a game <br>
-❌ XX/XX | Fields validation (zod? react-hook-form?) <br>
+🚧 XX/XX | Fields validation (zod? react-hook-form?) <br>
 
 #### MOBILE:
 

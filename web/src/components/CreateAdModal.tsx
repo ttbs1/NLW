@@ -1,55 +1,45 @@
 import * as Dialog from "@radix-ui/react-dialog"
-import { CaretDown, Check, GameController } from 'phosphor-react'
+import { Check, GameController } from 'phosphor-react'
 import Input from './Form/Input'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { styled } from '@stitches/react';
 
-import { Game } from "../screens/Games"
 import { useState, FormEvent } from "react"
 import axios from "axios"
-
-
-//VALIDAÇÃO DE CAMPOS >>>
-import { Resolver, useForm } from "react-hook-form"
-
-type FormValues = {
-    nickname: string;
-    lastName: string;
-};
-
-const resolver: Resolver<FormValues> = async (values) => {
-    return {
-        values: values.nickname ? values : {},
-        errors: !values.nickname
-            ? {
-                nickname: {
-                    type: 'required',
-                    message: 'This is required.',
-                },
-            }
-            : {},
-    };
-};
-//VALIDAÇÃO DE CAMPOS >>>
+import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod'
 
 type Props = {
-    data: Game[]
+    modalSelect: JSX.Element
 }
 
-const StyledTrigger = styled(Select.Trigger, {
-    '&[data-placeholder]': { color: '#71717A' },
+type FormValues = {
+    game: string,
+    name: string,
+    yearsPlaying: number,
+    discord: string
+}
+
+const schema = z.object({
+    game: z.string().length(36, { message: 'Required' }),
+    name: z.string().min(3, { message: 'Required' }),
+    yearsPlaying: z.number({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).lte(50, {message: 'O máximo para este campo é 50'}).nonnegative({message: 'Insira um número positivo'}),
+    discord: z.string({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).regex(new RegExp ('^.{3,32}#[0-9]{4}$'), 'Seu id discord tem o fomrato "someuser#1234"')
 });
 
-export function CreateAdModal({ data }: Props) {
+export function CreateAdModal({ modalSelect }: Props) {
 
     const [weekDays, setWeekDays] = useState<string[]>([])
     const [useVoiceChannel, setUseVoiceChannel] = useState(false)
     const [game, setGame] = useState("")
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver });
-    const onSubmit = handleSubmit((data) => console.log(data.nickname));
+    const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema) });
+
+    const onSubmit: SubmitHandler<FormValues> = data => {
+        console.log(data)
+    };
 
     function handleCreateAd(event: FormEvent) {
         event.preventDefault()
@@ -83,59 +73,40 @@ export function CreateAdModal({ data }: Props) {
                 <Dialog.Title className='text-2xl sm:text-3xl font-black'>Publique um anúncio</Dialog.Title>
 
 
-                <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="mt-8 flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <label htmlFor="game" className="text-sm sm:text-base font-semibold">Qual o game?</label>
-                        <Select.Root onValueChange={setGame}>
-                            <StyledTrigger className="w-[100%] h-11 py-3 px-4 bg-zinc-900 rounded text-sm flex justify-between items-center text-white">
-                                <Select.Value placeholder="Selecione o game que deseja jogar" />
-                                <Select.Icon>
-                                    <CaretDown className="text-[24px] text-zinc-500" />
-                                </Select.Icon>
-                            </StyledTrigger>
 
-                            <Select.Portal>
-                                <Select.Content className="w-[100%] py-3 px-4 bg-zinc-700 rounded text-sm">
-                                    <Select.ScrollUpButton />
-                                    <Select.Viewport>
-                                        <Select.Group>
-                                            <Select.Label className="py-1 text-zinc-500">
-                                                Games
-                                            </Select.Label>
-                                            {data.map((item) => {
-                                                return (
-                                                    <Select.Item key={item.id} value={item.id} className="text-white h-11 hover:bg-violet-500 items-center flex rounded-lg px-3">
-                                                        <Select.ItemText>
-                                                            {item.title}
-                                                        </Select.ItemText>
-                                                        <Select.ItemIndicator />
-                                                    </Select.Item>
-                                                )
-                                            })}
-                                        </Select.Group>
+                        <Controller
+                            name="game"
+                            control={control}
+                            defaultValue={undefined}
+                            render={({ field }) =>
+                                <Select.Root onValueChange={field.onChange} value={field.value}>
+                                    {modalSelect}
+                                </Select.Root>
+                            }
+                        />
+                        {errors?.game && <p>{errors.game.message}</p>}
 
-                                        <Select.Separator />
-                                    </Select.Viewport>
-                                    <Select.ScrollDownButton />
-                                </Select.Content>
-                            </Select.Portal>
-                        </Select.Root>
                     </div>
 
                     <div className="flex flex-col gap-2 text-sm sm:text-base">
                         <label htmlFor="name">Seu nome (ou nickname)</label>
-                        <Input {...register("nickname")} placeholder="Como te chamam dentro do game?" />
-                        {errors?.nickname && errors?.nickname.type === "required" && <span>{errors.nickname.message}</span>}
+                        <Input {...register("name")} placeholder="Como te chamam dentro do game?" />
+                        {errors?.name && <p>{errors.name.message}</p>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 text-sm sm:text-base">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="yearsPlaying">Joga a quantos anos?</label>
-                            <Input name="yearsPlaying" id="yearsPlaying" type="number" placeholder="Tudo bem ser ZERO" />
+                            <Input {...register("yearsPlaying", {valueAsNumber: true})} type="number" placeholder="Tudo bem ser ZERO" />
+                            {errors?.yearsPlaying && <p>{errors.yearsPlaying.message}</p>} 
                         </div>
                         <div className="flex flex-col gap-2">
                             <label htmlFor="discord">Qual o seu Discord?</label>
-                            <Input name="discord" id="discord" type="text" placeholder="Usuario#0000" />
+                            <Input {...register("discord")} type="text" placeholder="Usuario#0000" />
+                            {errors?.discord && <p>{errors.discord.message}</p>} 
                         </div>
                     </div>
 
