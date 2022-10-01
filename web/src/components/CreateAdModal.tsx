@@ -10,6 +10,8 @@ import axios from "axios"
 import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod'
+import ToggleGroupItems from "./Form/ToggleGroupItems"
+import { any } from "zod"
 
 type Props = {
     modalSelect: JSX.Element
@@ -19,21 +21,25 @@ type FormValues = {
     game: string,
     name: string,
     yearsPlaying: number,
-    discord: string
+    discord: string,
+    weekDays: string[],
+    hourStart: string,
+    hourEnd: string,
+    useVoiceChannel: boolean
 }
 
 const schema = z.object({
-    game: z.string().length(36, { message: 'Required' }),
-    name: z.string().min(3, { message: 'Required' }),
-    yearsPlaying: z.number({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).lte(50, {message: 'O máximo para este campo é 50'}).nonnegative({message: 'Insira um número positivo'}),
-    discord: z.string({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).regex(new RegExp ('^.{3,32}#[0-9]{4}$'), 'Seu id discord tem o fomrato "someuser#1234"')
+    game: z.string({ required_error: "Selecione um jogo", invalid_type_error: "Selecione um jogo" }).length(36, { message: 'Erro ao selecionar jogo' }),
+    name: z.string().min(3, { message: 'Esperado pelo menos 03 caracteres' }).max(50, { message: 'Excedido o máximo de 50 caracteres'}),
+    yearsPlaying: z.number({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).lte(50, { message: 'O máximo para este campo é 50' }).nonnegative({ message: 'Insira um número positivo' }),
+    discord: z.string({ required_error: "Preencha este campo", invalid_type_error: "Preencha este campo" }).regex(new RegExp('^.{3,32}#[0-9]{4}$'), 'Seu id discord tem o fomrato: "some user#1234"'),
+    weekDays: z.any().refine((arg: any) => arg.length != 0, {message: "Selecione pelo menos um dia"}),
+    hourStart: z.string().length(5, { message: "Preencha corretamente o campo horas/minutos" }),
+    hourEnd: z.string().length(5, { message: "Preencha corretamente o campo horas/minutos" }),
+    useVoiceChannel: z.boolean()
 });
 
 export function CreateAdModal({ modalSelect }: Props) {
-
-    const [weekDays, setWeekDays] = useState<string[]>([])
-    const [useVoiceChannel, setUseVoiceChannel] = useState(false)
-    const [game, setGame] = useState("")
 
     const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -53,10 +59,10 @@ export function CreateAdModal({ modalSelect }: Props) {
                 name: data.name,
                 yearsPlaying: Number(data.yearsPlaying),
                 discord: data.discord,
-                weekDays: weekDays.map(Number),
+                weekDays: ["2","5","6"].map(Number),
                 hourStart: data.hourStart,
                 hourEnd: data.hourEnd,
-                useVoiceChannel: useVoiceChannel
+                useVoiceChannel: true
             })
 
             alert('Anúncio criado com sucesso!');
@@ -87,112 +93,78 @@ export function CreateAdModal({ modalSelect }: Props) {
                                 </Select.Root>
                             }
                         />
-                        {errors?.game && <p>{errors.game.message}</p>}
+                        {errors?.game && <span className="text-[0.8rem] text-red-400">{errors.game.message}</span>}
 
                     </div>
 
                     <div className="flex flex-col gap-2 text-sm sm:text-base">
                         <label htmlFor="name">Seu nome (ou nickname)</label>
                         <Input {...register("name")} placeholder="Como te chamam dentro do game?" />
-                        {errors?.name && <p>{errors.name.message}</p>}
+                        {errors?.name && <span className="text-[0.8rem] text-red-400">{errors.name.message}</span>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 text-sm sm:text-base">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="yearsPlaying">Joga a quantos anos?</label>
-                            <Input {...register("yearsPlaying", {valueAsNumber: true})} type="number" placeholder="Tudo bem ser ZERO" />
-                            {errors?.yearsPlaying && <p>{errors.yearsPlaying.message}</p>} 
+                            <Input {...register("yearsPlaying", { valueAsNumber: true })} type="number" placeholder="Tudo bem ser ZERO" />
+                            {errors?.yearsPlaying && <span className="text-[0.8rem] text-red-400">{errors.yearsPlaying.message}</span>}
                         </div>
                         <div className="flex flex-col gap-2">
                             <label htmlFor="discord">Qual o seu Discord?</label>
                             <Input {...register("discord")} type="text" placeholder="Usuario#0000" />
-                            {errors?.discord && <p>{errors.discord.message}</p>} 
+                            {errors?.discord && <span className="text-[0.8rem] text-red-400">{errors.discord.message}</span>}
                         </div>
                     </div>
 
                     <div className="flex gap-6 text-sm sm:text-base">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="weekDays">Quando costuma jogar?</label>
-                            <ToggleGroup.Root
-                                type="multiple"
-                                className="grid grid-cols-4 gap-2"
-                                value={weekDays}
-                                onValueChange={setWeekDays}
-                            >
-                                <ToggleGroup.Item
-                                    value="0"
-                                    title="Domingo"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("0") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    D
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="1"
-                                    title="Segunda"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("1") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    S
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="2"
-                                    title="Terça"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("2") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    T
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="3"
-                                    title="Quarta"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("3") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    Q
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="4"
-                                    title="Quinta"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("4") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    Q
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="5"
-                                    title="Sexta"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("5") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    S
-                                </ToggleGroup.Item>
-                                <ToggleGroup.Item
-                                    value="6"
-                                    title="Sábado"
-                                    className={`w-8 h-8 rounded ${weekDays.includes("6") ? "bg-violet-500" : "bg-zinc-900"}`}
-                                >
-                                    S
-                                </ToggleGroup.Item>
-                            </ToggleGroup.Root>
+
+                            <Controller
+                                name="weekDays"
+                                control={control}
+                                defaultValue={[]}
+                                render={({ field }) =>
+                                    <ToggleGroup.Root
+                                        type="multiple"
+                                        className="grid grid-cols-4 gap-2"
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                    >
+                                        <ToggleGroupItems weekDays={field.value} />
+                                    </ToggleGroup.Root>
+                                }
+                            />
+                            {errors?.weekDays && <span className="text-[0.8rem] text-red-400">{errors.weekDays.message}</span>}
 
                         </div>
                         <div className="flex flex-col gap-1 flex-1">
                             <label htmlFor="hourStart">Qual horário do dia?</label>
                             <div className="grid grid-cols-1 gap-2 min-w-[105px]">
-                                <Input name="hourStart" id="hourStart" type="time" placeholder="De" />
-                                <Input name="hourEnd" id="hourEnd" type="time" placeholder="Até" />
+                                <Input {...register("hourStart")} type="time" placeholder="De" />
+                                {errors?.hourStart && <span className="text-[0.8rem] text-red-400">{errors.hourStart.message}</span>}
+                                <Input {...register("hourEnd")} type="time" placeholder="Até" />
+                                {errors?.hourEnd && <span className="text-[0.8rem] text-red-400">{errors.hourEnd.message}</span>}
                             </div>
                         </div>
                     </div>
 
                     <label className="mt-2 flex gap-2 text-sm items-center">
-                        <Checkbox.Root
-                            onCheckedChange={(checked) => {
-                                if (checked == true)
-                                    setUseVoiceChannel(true)
-                                else
-                                    setUseVoiceChannel(false)
-                            }}
-                            className="w-6 h-6 p-1 rounded bg-zinc-900">
-                            <Checkbox.Indicator>
-                                <Check className="w-4 h-4 text-emerald-400" />
-                            </Checkbox.Indicator>
-                        </Checkbox.Root>
+                        <Controller
+                            name="useVoiceChannel"
+                            control={control}
+                            defaultValue={false}
+                            render={({ field }) =>
+                                <Checkbox.Root
+                                    onCheckedChange={field.onChange}
+                                    className="w-6 h-6 p-1 rounded bg-zinc-900">
+                                    <Checkbox.Indicator>
+                                        <Check className="w-4 h-4 text-emerald-400" />
+                                    </Checkbox.Indicator>
+                                </Checkbox.Root>
+                            }
+                        />
+
                         Costumo me conectar ao chat de voz
                     </label>
 
