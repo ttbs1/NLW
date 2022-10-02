@@ -14,7 +14,8 @@ import ToggleGroupItems from "./Form/ToggleGroupItems"
 import { any } from "zod"
 
 type Props = {
-    modalSelect: JSX.Element
+    modalSelect: JSX.Element,
+    callback: () => void
 }
 
 type FormValues = {
@@ -39,38 +40,30 @@ const schema = z.object({
     useVoiceChannel: z.boolean()
 });
 
-export function CreateAdModal({ modalSelect }: Props) {
+export function CreateAdModal({ modalSelect, callback }: Props) {
 
     const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-    const onSubmit: SubmitHandler<FormValues> = data => {
-        console.log(data)
-    };
-
-    function handleCreateAd(event: FormEvent) {
-        event.preventDefault()
+    const onSubmit: SubmitHandler<FormValues> = (data) => {    
         console.log("submited form")
 
-        const formData = new FormData(event.target as HTMLFormElement)
-        const data = Object.fromEntries(formData)
-
         try {
-            axios.post(`http://localhost:3333/games/${game}/ads`, {
+            axios.post(`http://localhost:3333/games/${data.game}/ads`, {
                 name: data.name,
-                yearsPlaying: Number(data.yearsPlaying),
+                yearsPlaying: data.yearsPlaying,
                 discord: data.discord,
-                weekDays: ["2","5","6"].map(Number),
+                weekDays: data.weekDays.map(Number),
                 hourStart: data.hourStart,
                 hourEnd: data.hourEnd,
-                useVoiceChannel: true
+                useVoiceChannel: data.useVoiceChannel
             })
 
-            alert('Anúncio criado com sucesso!');
+            callback();
         } catch (err) {
             alert('Erro ao criar anúncio!')
             console.log(err);
         }
-    }
+    };
 
     return (
         <Dialog.Portal>

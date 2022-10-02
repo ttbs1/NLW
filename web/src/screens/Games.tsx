@@ -3,7 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog"
 import logoImg from './../assets/logo-nlw-esports.svg'
 import { GameBanner } from './../components/GameBanner'
 import { CreateAdBanner } from './../components/CreateAdBanner'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CreateAdModal } from './../components/CreateAdModal'
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
@@ -24,6 +24,7 @@ export type Game = {
 function Games() {
 
     const [games, setGames] = useState<Game[]>([]);
+    const [gamesUpdated, setGamesUpdated] = useState<boolean>(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
             loop: true,
@@ -35,11 +36,23 @@ function Games() {
             },
         }, [])
 
+    const didMount = useRef(false)
     useEffect(() => {
         setTimeout(function () {
             getGames().then(data => setGames(data));
         }, 1000) //CHANGE THE NUMBER 0 BY THE MILISECONDS YOU WANT TO DELAY API RESPONSE TO PREVIEW THE LOADING COMPONENT
-    }, [])
+
+        if (didMount.current) {
+            alert("Anuncio criado")
+            const event = new KeyboardEvent("keydown", {
+                'key': 'Escape'
+            });
+            document.dispatchEvent(event);
+        }
+        else
+            didMount.current = true
+    }, [gamesUpdated])
+
 
     const modalSelect = (
         <CustomSelect data={games} />
@@ -53,11 +66,11 @@ function Games() {
                 Seu <span className='bg-nlw-gradient text-transparent bg-clip-text'>duo</span> está aqui.
             </h1>
 
-            {games.length == 0 ? 
+            {games.length == 0 ?
                 <div className='mt-16 flex items-center align-middle h-[266.66px]'>
                     <Spinner size={25} color={"white"} />
                 </div>
-            :
+                :
                 <div ref={sliderRef} className='keen-slider mt-16 self-stretch'>
                     {games.map((game) => {
                         return <GameBanner
@@ -71,8 +84,8 @@ function Games() {
             }
             <Dialog.Root>
                 <CreateAdBanner />
-                <CreateAdModal modalSelect={modalSelect} /> 
-                { /* BOA ALTERNATIVA AO REACT CONTEXT (EVITAR PROP DRILLING) */ } 
+                <CreateAdModal modalSelect={modalSelect} callback={() => setGamesUpdated(!gamesUpdated)} />
+                { /* BOA ALTERNATIVA AO REACT CONTEXT (EVITAR PROP DRILLING) */}
             </Dialog.Root>
         </div>
     )
