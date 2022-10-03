@@ -11,6 +11,7 @@ After the classes period, I decided to work on new funcionalites to this project
 ✔️ 09/22 | Games carousel (keen-slider) <br>
 ✔️ 09/17 | Radix select to pick a game <br>
 ✔️ 10/01 | Fields validation (zod? react-hook-form?) <br>
+✔️ 10/03 | Using radix toast to feedback Ads creation on form submit <br>
 
 #### MOBILE:
 

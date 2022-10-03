@@ -92,7 +92,7 @@ function Games() {
             <Toast.Provider swipeDirection='down'>
 
                 
-                <StyledToast open={openAlert} onOpenChange={setOpenAlert} type="foreground" duration={4000}  className='grid bg-nlw-gradient pt-1 self-stretch rounded-lg overflow-hidden'>
+                <StyledToast open={openAlert} onOpenChange={setOpenAlert} type="foreground" duration={4000} className='grid bg-nlw-gradient pt-1 self-stretch rounded-lg overflow-hidden'>
                     <Alert />
                 </StyledToast>
                 <Toast.Viewport className='fixed bottom-0 right-0 flex m-8 w-96 max-w-fit' />
