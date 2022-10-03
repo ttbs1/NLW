@@ -13,6 +13,7 @@
     "@radix-ui/react-checkbox": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-select": "^1.0.0",
+    "@radix-ui/react-toast": "^1.0.0",
     "@radix-ui/react-toggle-group": "^1.0.0",
     "@stitches/react": "^1.2.8",
     "axios": "^0.27.2",

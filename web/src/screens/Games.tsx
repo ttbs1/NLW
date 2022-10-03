@@ -11,6 +11,9 @@ import { getGames } from './../api'
 import { Spinner } from "react-activity"
 import "react-activity/dist/library.css"
 import CustomSelect from '../components/Form/CustomSelect'
+import Alert from '../components/Alert'
+import * as Toast from '@radix-ui/react-toast'
+import { keyframes, styled } from '@stitches/react'
 
 export type Game = {
     id: string;
@@ -25,6 +28,8 @@ function Games() {
 
     const [games, setGames] = useState<Game[]>([]);
     const [gamesUpdated, setGamesUpdated] = useState<boolean>(false);
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openAlert, setOpenAlert] = useState<boolean>(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
             loop: true,
@@ -41,13 +46,9 @@ function Games() {
         setTimeout(function () {
             getGames().then(data => setGames(data));
         }, 1000) //CHANGE THE NUMBER 0 BY THE MILISECONDS YOU WANT TO DELAY API RESPONSE TO PREVIEW THE LOADING COMPONENT
-
+        
         if (didMount.current) {
-            alert("Anuncio criado")
-            const event = new KeyboardEvent("keydown", {
-                'key': 'Escape'
-            });
-            document.dispatchEvent(event);
+            setOpenAlert(true)
         }
         else
             didMount.current = true
@@ -82,13 +83,61 @@ function Games() {
                     })}
                 </div>
             }
-            <Dialog.Root>
+            <Dialog.Root open={openModal} onOpenChange={setOpenModal}>
                 <CreateAdBanner />
-                <CreateAdModal modalSelect={modalSelect} callback={() => setGamesUpdated(!gamesUpdated)} />
+                <CreateAdModal modalSelect={modalSelect} callback={() => setGamesUpdated(!gamesUpdated)} setOpen={(open: boolean) => setOpenModal(open)} />
                 { /* BOA ALTERNATIVA AO REACT CONTEXT (EVITAR PROP DRILLING) */}
             </Dialog.Root>
+
+            <Toast.Provider swipeDirection='down'>
+
+                
+                <StyledToast open={openAlert} onOpenChange={setOpenAlert} type="foreground" duration={4000}  className='grid bg-nlw-gradient pt-1 self-stretch rounded-lg overflow-hidden'>
+                    <Alert />
+                </StyledToast>
+                <Toast.Viewport className='fixed bottom-0 right-0 flex m-8 w-96 max-w-fit' />
+            </Toast.Provider>
         </div>
     )
 }
+
+
+//configs alert animation
+
+const hide = keyframes({
+    '0%': { opacity: 1 },
+    '100%': { opacity: 0 },
+  });
+  
+  const slideIn = keyframes({
+    from: { transform: `translateX(calc(100% + ${32}px))` },
+    to: { transform: 'translateX(0)' },
+  });
+  
+  const swipeOut = keyframes({
+    from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
+    to: { transform: `translateX(calc(100% + ${32}px))` },
+  });
+  
+  const StyledToast = styled(Toast.Root, {
+    '@media (prefers-reduced-motion: no-preference)': {
+      '&[data-state="open"]': {
+        animation: `${slideIn} 150ms cubic-bezier(0.16, 1, 0.3, 1)`,
+      },
+      '&[data-state="closed"]': {
+        animation: `${hide} 100ms ease-in`,
+      },
+      '&[data-swipe="move"]': {
+        transform: 'translateX(var(--radix-toast-swipe-move-x))',
+      },
+      '&[data-swipe="cancel"]': {
+        transform: 'translateX(0)',
+        transition: 'transform 200ms ease-out',
+      },
+      '&[data-swipe="end"]': {
+        animation: `${swipeOut} 100ms ease-out`,
+      },
+    },
+  });
 
 export default Games

@@ -16,6 +16,7 @@ import { any } from "zod"
 type Props = {
     modalSelect: JSX.Element,
     callback: () => void
+    setOpen: (open:boolean) => void
 }
 
 type FormValues = {
@@ -40,7 +41,7 @@ const schema = z.object({
     useVoiceChannel: z.boolean()
 });
 
-export function CreateAdModal({ modalSelect, callback }: Props) {
+export function CreateAdModal({ modalSelect, callback, setOpen }: Props) {
 
     const { control, handleSubmit, register, formState: { errors } } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -59,6 +60,7 @@ export function CreateAdModal({ modalSelect, callback }: Props) {
             })
 
             callback();
+            setOpen(false)
         } catch (err) {
             alert('Erro ao criar anúncio!')
             console.log(err);
