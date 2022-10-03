@@ -13,7 +13,7 @@ function AdCard({ data }: Props) {
     return (
         <div className='relative bg-[#2A2634] rounded-lg overflow-hidden keen-slider__slide min-w-[210px] max-w-[210px] p-4'>
             <p className='text-[#c4c4c6] text-sm'>Nome</p>
-            <strong className='font-bold text-white block mb-1'>{data.name}</strong>
+            <strong className='font-bold text-white block mb-1 whitespace-nowrap overflow-ellipsis overflow-hidden'>{data.name}</strong>
             <p className='text-[#c4c4c6] text-sm'>Tempo de jogo</p>
             <strong className='font-bold text-white block mb-1'>{data.yearsPlaying}</strong>
             <p className='text-[#c4c4c6] text-sm'>Disponibilidade</p>
