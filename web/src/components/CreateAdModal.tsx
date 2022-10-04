@@ -5,13 +5,11 @@ import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
 
-import { useState, FormEvent } from "react"
 import axios from "axios"
 import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod'
 import ToggleGroupItems from "./Form/ToggleGroupItems"
-import { any } from "zod"
 
 type Props = {
     modalSelect: JSX.Element,
@@ -137,9 +135,8 @@ export function CreateAdModal({ modalSelect, callback, setOpen }: Props) {
                             <label htmlFor="hourStart">Qual horário do dia?</label>
                             <div className="grid grid-cols-1 gap-2 min-w-[105px]">
                                 <Input {...register("hourStart")} type="time" placeholder="De" />
-                                {errors?.hourStart && <span className="text-[0.8rem] text-red-400">{errors.hourStart.message}</span>}
                                 <Input {...register("hourEnd")} type="time" placeholder="Até" />
-                                {errors?.hourEnd && <span className="text-[0.8rem] text-red-400">{errors.hourEnd.message}</span>}
+                                {(errors?.hourStart || errors?.hourEnd) && <span className="text-[0.8rem] text-red-400">{errors?.hourEnd?.message || errors?.hourStart?.message}</span>}
                             </div>
                         </div>
                     </div>
