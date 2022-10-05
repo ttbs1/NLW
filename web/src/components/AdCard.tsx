@@ -15,7 +15,7 @@ function AdCard({ data }: Props) {
             <p className='text-[#c4c4c6] text-sm'>Nome</p>
             <strong className='font-bold text-white block mb-1 whitespace-nowrap overflow-ellipsis overflow-hidden'>{data.name}</strong>
             <p className='text-[#c4c4c6] text-sm'>Tempo de jogo</p>
-            <strong className='font-bold text-white block mb-1'>{data.yearsPlaying}</strong>
+            <strong className='font-bold text-white block mb-1'>{`${data.yearsPlaying} ano${data.yearsPlaying == 1 ? "":"s"}`}</strong>
             <p className='text-[#c4c4c6] text-sm'>Disponibilidade</p>
             <strong className='font-bold text-white block mb-1'>{`${data.weekDays.length} dias \u2022 ${data.hourStart} - ${data.hourEnd}`}</strong>
             <p className='text-[#c4c4c6] text-sm'>Chamada de áudio?</p>

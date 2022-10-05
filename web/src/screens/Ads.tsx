@@ -60,7 +60,7 @@ function Ads() {
                     <p className='text-lg'>Conecte-se e comece a jogar!</p>
                 </h1>
             </div>
-            <div className='max-w-full sm:min-w-[50%] sm:pl-20'>
+            <div className='max-w-full sm:pl-20 w-[100%]'>
                 <div className='flex self-stretch justify-center sm:justify-start'>
                     <Link to={'/'} className='text-sm mt-3 sm:mt-0 sm:text-base py-2 px-3 sm:py-3 sm:px-4 bg-violet-500 hover:bg-violet-600 text-white rounded flex center items-center gap-3'>
                         <ArrowArcLeft size={24} />
