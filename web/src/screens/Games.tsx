@@ -40,7 +40,7 @@ function Games() {
             loop: games.filter(game => { if (game.title.toLocaleLowerCase().includes(filterInput.toLowerCase()) || filterInput == "") return game }).length > 5 ? true : false,
             mode: "free-snap",
             slides: {
-                origin: size ? 'auto':'center',
+                origin: size ? 'auto' : 'center',
                 perView: 'auto',
                 spacing: 30
             },
@@ -78,15 +78,20 @@ function Games() {
             <h1 className='text-6xl text-white font-black mt-20 text-center'>
                 Seu <span className='bg-nlw-gradient text-transparent bg-clip-text'>duo</span> está aqui.
             </h1>
-
-            <input onChange={(event => setFilterInput(event.target.value))} />
-
+            <div className='flex mt-8 bg-nlw-gradient pt-1 rounded'>
+                <span className='bg-[#2a2634] rounded-l text-white font-bold h-10 px-8 py-2'>Filtro</span>
+                <input 
+                    onChange={(event => setFilterInput(event.target.value))} 
+                    placeholder="Encontre o seu game!" 
+                    className='rounded-r h-10 px-3 w-48 sm:w-56 focus:w-full max-w-fit sm:max-w-full focus:transition-all focus:outline-none bg-zinc-700 text-white'    
+                />
+            </div>
             {games.length == 0 ?
-                <div className='mt-16 flex items-center align-middle h-[266.66px]'>
+                <div className='mt-12 flex items-center align-middle h-[266.66px]'>
                     <Spinner size={25} color={"white"} />
                 </div>
                 :
-                <div ref={sliderRef} className='keen-slider mt-16 self-stretch'>
+                <div ref={sliderRef} className='keen-slider mt-12 self-stretch'>
                     {
                         games.filter(game => {
                             if (game.title.toLocaleLowerCase().includes(filterInput.toLowerCase()) || filterInput == "")

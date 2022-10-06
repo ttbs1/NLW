@@ -28,7 +28,7 @@ function Ads() {
     const [fetchFlag, setFetchFlag] = useState(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
-            loop: true,
+            loop: false,
             mode: "free-snap",
             slides: {
                 origin: size ? "auto" : "center",
