@@ -34,7 +34,7 @@ After the classes period, I decided to work on new funcionalites to this project
 #### BOTH
 
 WEB: ✔️ 10/04 | MOBILE: ❌ XX/XX | Input to filter games list <br>
-WEB: ❌ XX/XX | MOBILE: ❌ XX/XX | Filter ads by date, time playing, week days and more <br>
+WEB: 🚧 10/06 | MOBILE: ❌ XX/XX | Filter ads by date, time playing, week days and more <br>
 
 #### SERVER:
 
