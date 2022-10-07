@@ -3,7 +3,7 @@ import * as Dialog from "@radix-ui/react-dialog"
 import logoImg from './../assets/logo-nlw-esports.svg'
 import { GameBanner } from './../components/GameBanner'
 import { CreateAdBanner } from './../components/CreateAdBanner'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CreateAdModal } from './../components/CreateAdModal'
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
@@ -15,6 +15,7 @@ import Alert from '../components/Alert'
 import * as Toast from '@radix-ui/react-toast'
 import { keyframes, styled } from '@stitches/react'
 import { useWindowSize } from '../util/useWindowSize'
+import { FilterInput } from '../components/FilterInput'
 
 export type Game = {
     id: string;
@@ -78,14 +79,9 @@ function Games() {
             <h1 className='text-6xl text-white font-black mt-20 text-center'>
                 Seu <span className='bg-nlw-gradient text-transparent bg-clip-text'>duo</span> está aqui.
             </h1>
-            <div className='flex mt-8 bg-nlw-gradient pt-1 rounded'>
-                <span className='bg-[#2a2634] rounded-l text-white font-bold h-10 px-8 py-2'>Filtro</span>
-                <input 
-                    onChange={(event => setFilterInput(event.target.value))} 
-                    placeholder="Encontre o seu game!" 
-                    className='rounded-r h-10 px-3 w-48 sm:w-56 focus:w-full max-w-fit sm:max-w-full focus:transition-all focus:outline-none bg-zinc-700 text-white'    
-                />
-            </div>
+
+            <FilterInput onChange={((event:React.ChangeEvent<HTMLInputElement>) => setFilterInput(event.target.value))} placeholder="Encontre o seu game!" />
+            
             {games.length == 0 ?
                 <div className='mt-12 flex items-center align-middle h-[266.66px]'>
                     <Spinner size={25} color={"white"} />

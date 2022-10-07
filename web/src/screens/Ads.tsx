@@ -1,11 +1,12 @@
 import { useKeenSlider } from 'keen-slider/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-activity';
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import AdCard from '../components/AdCard';
 import { getAds } from './../api';
 import { ArrowArcLeft } from 'phosphor-react'
 import { useWindowSize } from '../util/useWindowSize';
+import { FilterInput } from '../components/FilterInput';
 
 export type Ad = {
     id: string,
@@ -26,6 +27,7 @@ function Ads() {
     let banner = searchParams.get("banner");
     const [ads, setAds] = useState<Ad[]>([]);
     const [fetchFlag, setFetchFlag] = useState(false);
+    const [filterInput, setFilterInput] = useState<string>("");
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
             loop: false,
@@ -48,8 +50,16 @@ function Ads() {
 
     }, [])
 
+    useEffect(() => {
+        setTimeout(function () {
+            instanceRef.current?.update
+        }, 500)
+        instanceRef.current?.update()
+    }, [filterInput])
+
     return (
         <div className='max-w-[88%] mx-auto flex flex-col sm:flex-row items-center m-20'>
+
             <div>
                 <div className='flex self-stretch justify-center'>
                     <img src={banner as string} className="h-64 2xl:h-auto" />
@@ -60,13 +70,17 @@ function Ads() {
                     <p className='text-lg'>Conecte-se e comece a jogar!</p>
                 </h1>
             </div>
+
             <div className='max-w-full sm:pl-20 w-[100%]'>
                 <div className='flex self-stretch justify-center sm:justify-start'>
                     <Link to={'/'} className='text-sm mt-3 sm:mt-0 sm:text-base py-2 px-3 sm:py-3 sm:px-4 bg-violet-500 hover:bg-violet-600 text-white rounded flex center items-center gap-3'>
                         <ArrowArcLeft size={24} />
-                        {size ? "voltar":""}
+                        {size ? "voltar" : ""}
                     </Link>
                 </div>
+
+
+
                 {ads.length == 0 ? (
                     !fetchFlag ?
                         <div className='mt-14 flex items-center self-stretch justify-center align-middle h-[276.66px]'>
@@ -79,12 +93,19 @@ function Ads() {
                 )
                     :
                     <div ref={sliderRef} className='keen-slider mt-8 self-stretch h-[276.66px]'>
-                        {ads.map((ad) => {
+                        {ads.filter(ad => {
+                            if (ad.yearsPlaying >= parseInt(filterInput) || filterInput == "")
+                                return ad
+                        }).map((ad) => {
                             return (
                                 <AdCard key={ad.id} data={ad} />
                             )
                         })}
                     </div>}
+
+                <div className='flex w-full justify-center sm:justify-start'>
+                    <FilterInput placeholder="Time playing" type="number" min="0" max="50" onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterInput(event.target.value)} />
+                </div>
             </div>
         </div>
     );
