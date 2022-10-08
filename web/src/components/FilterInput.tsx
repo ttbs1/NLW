@@ -2,7 +2,7 @@
 
 export function FilterInput({...rest}) {
     return (
-        <div className='flex mt-8 bg-nlw-gradient pt-1 rounded'>
+        <div className='flex bg-nlw-gradient pt-1 rounded w-fit'>
             <span className='bg-[#2a2634] rounded-l text-white font-bold h-10 px-8 py-2'>Filtro</span>
             <input
                 {...rest}

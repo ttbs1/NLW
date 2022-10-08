@@ -124,7 +124,7 @@ export function CreateAdModal({ modalSelect, callback, setOpen }: Props) {
                                         value={field.value}
                                         onValueChange={field.onChange}
                                     >
-                                        <ToggleGroupItems weekDays={field.value} />
+                                        <ToggleGroupItems weekDays={field.value} bg="bg-zinc-900" />
                                     </ToggleGroup.Root>
                                 }
                             />

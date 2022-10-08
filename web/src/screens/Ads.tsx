@@ -4,9 +4,12 @@ import { Spinner } from 'react-activity';
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import AdCard from '../components/AdCard';
 import { getAds } from './../api';
-import { ArrowArcLeft } from 'phosphor-react'
+import { ArrowArcLeft, Check } from 'phosphor-react'
 import { useWindowSize } from '../util/useWindowSize';
 import { FilterInput } from '../components/FilterInput';
+import * as Checkbox from '@radix-ui/react-checkbox'
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
+import ToggleGroupItems from '../components/Form/ToggleGroupItems';
 
 export type Ad = {
     id: string,
@@ -15,7 +18,8 @@ export type Ad = {
     useVoiceChannel: boolean,
     yearsPlaying: number,
     hourStart: string,
-    hourEnd: string
+    hourEnd: string,
+    createdAt: string
 }
 
 function Ads() {
@@ -27,7 +31,9 @@ function Ads() {
     let banner = searchParams.get("banner");
     const [ads, setAds] = useState<Ad[]>([]);
     const [fetchFlag, setFetchFlag] = useState(false);
-    const [filterInput, setFilterInput] = useState<string>("");
+    const [filterInputYears, setFilterInputYears] = useState<string>("");
+    const [filterInputWeek, setFilterInputWeek] = useState<string[]>([]);
+    const [filterInputVoice, setFilterInputVoice] = useState<boolean>(false);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
         {
             loop: false,
@@ -55,7 +61,7 @@ function Ads() {
             instanceRef.current?.update
         }, 500)
         instanceRef.current?.update()
-    }, [filterInput])
+    }, [filterInputYears, filterInputVoice, filterInputWeek])
 
     return (
         <div className='max-w-[88%] mx-auto flex flex-col sm:flex-row items-center m-20'>
@@ -94,8 +100,18 @@ function Ads() {
                     :
                     <div ref={sliderRef} className='keen-slider mt-8 self-stretch h-[276.66px]'>
                         {ads.filter(ad => {
-                            if (ad.yearsPlaying >= parseInt(filterInput) || filterInput == "")
+                            if (ad.yearsPlaying >= parseInt(filterInputYears) || filterInputYears == "")
                                 return ad
+                        }).filter(ad => {
+                            if (ad.useVoiceChannel || !filterInputVoice)
+                                return ad
+                        }).filter(ad => {
+                            let aux = true
+                            for(let x = 0; x < filterInputWeek.length; x++)
+                                if (!ad.weekDays.toString().includes(filterInputWeek[x]))
+                                    aux = false
+                            
+                                if (aux) return ad
                         }).map((ad) => {
                             return (
                                 <AdCard key={ad.id} data={ad} />
@@ -103,8 +119,35 @@ function Ads() {
                         })}
                     </div>}
 
-                <div className='flex w-full justify-center sm:justify-start'>
-                    <FilterInput placeholder="Time playing" type="number" min="0" max="50" onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterInput(event.target.value)} />
+                <div className='flex flex-col w-full justify-center content-center sm:flex-row sm:justify-start mt-2 py-6'>
+                    <div className='flex justify-center sm:mr-6'>
+                        <div className='flex items-center'>
+                            <FilterInput placeholder="Time playing" type="number" min="0" max="50" onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterInputYears(event.target.value)} />
+                        </div>
+                    </div>
+                    <div className='flex justify-center text-white mt-4 sm:mt-0 sm:mr-6'>
+                        <ToggleGroup.Root
+                            type="multiple"
+                            className="grid grid-cols-4 gap-2 items-center"
+                            value={filterInputWeek}
+                            onValueChange={setFilterInputWeek}
+                        >
+                            <ToggleGroupItems weekDays={filterInputWeek} bg="bg-zinc-700" />
+                        </ToggleGroup.Root>
+                    </div>
+                    <div className='flex justify-center mt-4 sm:mt-0'>
+                        <label className="flex gap-2 text-sm items-center text-white">
+                            <Checkbox.Root
+                                onCheckedChange={() => setFilterInputVoice(!filterInputVoice)}
+                                className="w-6 h-6 p-1 rounded bg-zinc-700"
+                            >
+                                <Checkbox.Indicator>
+                                    <Check className="w-4 h-4 text-emerald-400" />
+                                </Checkbox.Indicator>
+                            </Checkbox.Root>
+                            Uses voice channel
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
