@@ -56,7 +56,8 @@ app.get('/games/:id/ads', async (request, response) => {
             useVoiceChannel: true,
             yearsPlaying: true,
             hourStart: true,
-            hourEnd: true
+            hourEnd: true,
+            createdAt: true
         },
         where: {
             gameId,
